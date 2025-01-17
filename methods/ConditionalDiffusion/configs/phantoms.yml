@@ -1,0 +1,64 @@
+diff_method:
+  type: "sbld"
+
+training:
+  batch_size: 128
+  n_epochs: 50000
+  n_iters: 300001
+  snapshot_freq: 10000
+  snapshot_sampling: true
+  anneal_power: 2
+  log_all_sigmas: false
+
+sampling:
+  sample_size: 3000
+  batch_size: 100
+  data_init: false
+  step_lr: 0.0000057
+  n_steps_each: 5
+  ckpt_id: 8000
+  final_only: true
+  denoise: true
+  control_id: 0
+
+test:
+  begin_ckpt: 10000
+  end_ckpt: 300000
+  batch_size: 100
+
+data:
+  dataset: "phantoms"
+  x_type: "vector"
+  image_size: 64
+  size: 4
+  channels: 1
+  meas_channels: 1
+  logit_transform: false
+  uniform_dequantization: false
+  gaussian_dequantization: false
+  random_flip: false
+  rescaled: false
+  num_workers: 8
+  control_id: 0
+
+model:
+  sigma_begin: 50
+  num_classes: 32
+  ema: true
+  ema_rate: 0.999
+  spec_norm: false
+  sigma_dist: geometric
+  sigma_end: 0.01
+  normalization: InstanceNorm++
+  nonlinearity: elu
+  ngf: 64
+  hidden_dims: [128, 128, 128, 128, 128]
+  condition_dim: 128
+
+optim:
+  weight_decay: 0.000
+  optimizer: "Adam"
+  lr: 0.0001
+  beta1: 0.9
+  amsgrad: false
+  eps: 0.00000001
