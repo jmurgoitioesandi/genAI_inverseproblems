@@ -10,12 +10,12 @@ from datasets.inverse_problems import (
 )
 
 
-def get_dataset(args):
-    if args.problem == "HeatEqSingleSource":
+def get_dataset(args, config):
+    if config.data.dataset == "HeatEqSingleSource":
         dataset, val_dataset, test_dataset = get_heat_eq_single_source_dataset(args)
-    elif args.problem == "HeatEqDoubleSource":
+    elif config.data.dataset == "HeatEqDoubleSource":
         dataset, val_dataset, test_dataset = get_heat_eq_double_source_dataset(args)
-    elif args.problem == "HelmholtzEq":
+    elif config.data.dataset == "HelmholtzEq":
         dataset, val_dataset, test_dataset = get_helmholtz_eq_dataset(args)
     else:
         raise ValueError("Unknown dataset")

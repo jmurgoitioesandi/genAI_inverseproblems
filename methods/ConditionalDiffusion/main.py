@@ -97,7 +97,7 @@ def parse_args_and_config():
         new_config.data.size = 3
     elif args.problem == "HeatEqDoubleSource":
         new_config.data.size = 6
-    
+
     args.doc = (
         args.doc
         + "_"

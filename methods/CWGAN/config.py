@@ -10,15 +10,9 @@ def cla():
 
     # Data parameters
     parser.add_argument(
-        "--dataset_directory",
-        type=str,
-        default="/scratch1/murgoiti/Datasets/Runze_Phantoms_dataset_for_PyTorch_1em7noise",
-        help=textwrap.dedent("""Data file containing training data pairs"""),
-    )
-    parser.add_argument(
         "--saving_dir",
         type=str,
-        default="cWGAN_Runze_Phantoms_110223",
+        default="110223",
         help=textwrap.dedent("""Directory to save files"""),
     )
     parser.add_argument(
@@ -60,5 +54,53 @@ def cla():
         type=int,
         default=10,
         help=textwrap.dedent("""Dimension of latent vector"""),
+    )
+    parser.add_argument(
+        "--gp_coef",
+        type=int,
+        default=10,
+        help=textwrap.dedent("""Gradient penalty coefficient"""),
+    )
+    parser.add_argument(
+        "--n_critic",
+        type=int,
+        default=10,
+        help=textwrap.dedent("""Number of critic iterations per generator iteration"""),
+    )
+    parser.add_argument(
+        "--problem",
+        type=str,
+        required=True,
+        help="Inverse problem being solved",
+    )
+    parser.add_argument(
+        "--xtype",
+        type=str,
+        required=True,
+        help="Inferred vector or image",
+    )
+    parser.add_argument(
+        "--noiselvl",
+        type=float,
+        required=True,
+        help="Standard deviation of noise",
+    )
+    parser.add_argument(
+        "--im_size",
+        type=int,
+        default=64,
+        help="Size of the image",
+    )
+    parser.add_argument(
+        "--meas_channels",
+        type=int,
+        default=1,
+        help="Number of measurement channels",
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="UNET_CIN",
+        help="Type of model to use",
     )
     return parser.parse_args()

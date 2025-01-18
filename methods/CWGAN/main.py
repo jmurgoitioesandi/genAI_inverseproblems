@@ -3,13 +3,13 @@ import torch
 from torchsummary import summary
 from torch.utils.data import DataLoader
 from torch.optim import Adam
-from model import generator_encdec_dense_2D, critic_dense_2D
+from model import get_models
 from cwgan import Conditional_WGAN
-from utils.data_utils import LoadImageDataset_JME
 from utils.plotting_functions import (
     plotting_image_grid_cwgan_true_vs_generated,
 )
 from config import cla
+from datasets import get_dataset
 
 
 def main():
@@ -25,44 +25,30 @@ def main():
     np.random.seed(PARAMS.seed_no)
     torch.manual_seed(PARAMS.seed_no)
 
-    train_data = LoadImageDataset_JME(
-        directory=PARAMS.dataset_directory, N=PARAMS.n_train, label="train"
-    )
-
-    val_data = LoadImageDataset_JME(
-        directory=PARAMS.dataset_directory, N=PARAMS.n_val, label="val"
-    )
+    train_dataset, val_dataset, test_dataset = get_dataset(PARAMS)
 
     train_loader = DataLoader(
-        train_data, batch_size=PARAMS.batch_size, shuffle=True, drop_last=True
+        train_dataset, batch_size=PARAMS.batch_size, shuffle=True, drop_last=True
     )
 
     val_loader = DataLoader(
-        val_data, batch_size=PARAMS.batch_size, shuffle=False, drop_last=False
+        val_dataset, batch_size=PARAMS.batch_size, shuffle=False, drop_last=False
     )
 
     # Creating the models
-
-    x_shape = (1, 64, 64)
-    y_shape = (12, 64, 64)
-    z_shape = (10, 1, 1)
-
-    generator_model = generator_encdec_dense_2D(
-        y_shape,
-        out_channels=1,
-        z_dim=PARAMS.z_dim,
-        k0=16,
-        act_param=0.1,
-        denselayers=2,
-        dense_int_out=12,
+    PARAMS.saving_dir = (
+        PARAMS.saving_dir
+        + "_"
+        + PARAMS.problem
+        + "_"
+        + "CWGAN"
+        + "_"
+        + PARAMS.xtype
+        + "_noiselvl"
+        + str(int(100 * PARAMS.noiselvl))
     )
-    critic_model = critic_dense_2D(
-        x_shape,
-        y_shape,
-        k0=16,
-        denselayers=2,
-        dense_int_out=16,
-    )
+
+    generator_model, critic_model = get_models(PARAMS)
 
     # summary(
     #     generator_model,
@@ -90,7 +76,8 @@ def main():
         device=device,
         z_dim=PARAMS.z_dim,
         z_shape=[PARAMS.z_dim, 1, 1],
-        gp_coef=10,
+        gp_coef=PARAMS.gp_coef,
+        n_critic=PARAMS.n_critic,
     )
 
     wgan_trainer.load_models_init(generator_model, critic_model, g_optim, c_optim)
